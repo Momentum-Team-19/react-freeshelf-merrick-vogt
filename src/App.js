@@ -1,11 +1,11 @@
 import './App.css'
-import bookData from './book-data.json'
+import Books from './Book';
 
 function App() {
   return (
-    <div>
-      <h1>Freeshelf</h1>
-      {/* Use bookData to show books on the page*/}
+    <div className="App">
+      <h1>Book List</h1>
+      <Books />
     </div>
   )
 }
