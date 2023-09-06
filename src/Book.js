@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import blankBookImage from './blank-book.jpg';
+
 
 // booksData is an arbitrary name for the imported data
 // the json file is an array of objects where each object is a book with its properties
@@ -9,6 +11,8 @@ import SearchComponent from './SearchComponent';
 
 // Import the ViewToggle for the view toggle button
 import ViewToggle from './ViewToggle';
+
+
 
 // Arrow function for Books component
 const Books = () => {
@@ -29,6 +33,10 @@ const Books = () => {
     
     // Create a state variable to keep track of the view
     const [view, setView] = useState('list');  // Default to list view
+
+    // Create a state variable to keep track of the image error
+    const [imageError, setImageError] = useState({});
+
 
     useEffect(() => {
         let sorted = [...booksData];
@@ -60,7 +68,14 @@ const Books = () => {
             break;
         }
         setSortedBooks(sorted);
-      }, [sortOption, searchQuery]);
+    }, [sortOption, searchQuery]);
+
+    const handleImageError = (bookTitle) => {
+        setImageError((prevErrors) => {
+            return { ...prevErrors, [bookTitle]: true };
+        });
+    };
+      
 
 
     // Function to toggle a book's expanded state
@@ -92,10 +107,11 @@ const Books = () => {
       
     // Return the JSX for the Books component
     return (
-        <div>
+        <div className="container my-5 text-center">
+            <h1 className="display-4 mb-4">Book Library</h1>
+
             <ViewToggle view={view} setView={setView} />
 
-            {/* Search bar and Dropdown Sort Option*/}
             <SearchComponent 
                 searchQuery={searchQuery} 
                 setSearchQuery={setSearchQuery} 
@@ -103,48 +119,50 @@ const Books = () => {
                 setSortOption={setSortOption}
             />
 
-            {/* 
-            The map method is used to iterate over the array of objects. 
-            This map method returns a new array with the JSX elements. 
-            Each div needs a unique key prop. We can use book's index of the json array.
-            */}
-
-            <div className="container">
-                <div className="row">
-                    {sortedBooks.map((book, index) => (
-                        <div key={book.title} className={view === 'grid' ? 'col-md-4' : 'col-md-12'}>
-                            <div className="book-content">
-                                <img src={book.coverImageUrl} alt={book.title} width="100" />
-                                <h2>{book.title}</h2>
-                                <h3>Author: {book.author}</h3>
-                                <p>{book.shortDescription}</p>
-
-                                {/* More Information Button */}
-                                <p>
-                                <button
-                                onClick={() => toggleExpand(book)}
-                                aria-expanded={expandedBooks[book.title] || false}
-                                >
-                                More Information
-                                </button>
-                                </p>
-
-                                {/* Conditional Rendering */}
-                                {expandedBooks[book.title] && (
-                                <div>
-                                    <p>Publisher: {book.publisher}</p>
-                                    <p>Publication Date: {book.publicationDate}</p>
-                                    <p>{book.detailedDescription}</p>
-                                    <a href={book.url}>Link to Book</a>
-                                </div>
+            <div className="container mt-5">
+                <div className="row justify-content-center">
+                    {sortedBooks.map((book) => (
+                        <div key={book.title} className={`book-content ${view === 'grid' ? 'col-md-4' : 'col-md-12'}`}>
+                            <div className={`book-content ${view === 'list' ? 'list-view' : 'grid-view'}`}>
+                                {imageError[book.title] ? (
+                                    <div className="fallback-image">
+                                        <img src={blankBookImage} alt="Fallback" />
+                                        <span className="fallback-title">{book.title}</span>
+                                    </div>
+                                    ) : (
+                                    <img
+                                        src={book.coverImageUrl}
+                                        alt={book.title}
+                                        onError={() => handleImageError(book.title)}
+                                    />
                                 )}
+                                <div className="book-info">
+                                    <h2 className="mt-3">{book.title}</h2>
+                                    <h3>Author: {book.author}</h3>
+                                    <p>{book.shortDescription}</p>
+
+                                    <button
+                                        onClick={() => toggleExpand(book)}
+                                        aria-expanded={expandedBooks[book.title] || false}
+                                        className="btn btn-primary"
+                                    >
+                                    More Information
+                                    </button>
+
+                                    {expandedBooks[book.title] && (
+                                    <div className="mt-3">
+                                        <p>Publisher: {book.publisher ? book.publisher : 'Not Available'}</p>
+                                        <p>Publication Date: {book.publicationDate ? book.publicationDate : 'Not Available'}</p>
+                                        <p>{book.detailedDescription}</p>
+                                        <a href={book.url} className="btn btn-secondary">Link to Book</a>
+                                    </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
-
-        {/* div around the entire return statement */}
         </div> 
     );
 };

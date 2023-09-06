@@ -1,7 +1,92 @@
 .book-content {
-    /* No max-height or overflow settings */
     padding: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    min-height: 200px;
+    background-color: #7a3300;
   }
+
+.list-view {
+    display: flex;
+    align-items: flex-start;
+    background-color: #FAEBD7;
+    background-image: url('./white-paper.png');
+    background-blend-mode: multiply;
+    background-size: 50% 100%;
+}
+
+.grid-view {
+    background-color: #FAEBD7;
+    background-image: url('./white-paper.png');
+    background-blend-mode: multiply;
+    background-size: 50% 100%;
+}
+
+.list-view img, .grid-view img {
+    border: 2px solid #7a3300;  /* Add leather-colored border */
+}
+  
+
+.list-view img {
+    height: 200px;  /* Set height to match the new min-height of the container */
+    width: auto;
+    margin-right: 20px;
+    margin-left: 40px;
+}
+
+.list-view .book-info {
+    margin: 0 40px;
+    flex: 1 1 auto;
+}
+
+/* Search bar and dropdown filter outline */
+.search-bar, .dropdown-filter {
+    border: 2px solid #7a3300;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px;
+}
+  
+button {
+    background-color: #e66d02 !important;
+    color: #FAEBD7 !important;
+    border: none !important;
+    padding: 10px 20px !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    font-size: 16px !important;
+    margin: 4px 2px !important;
+    cursor: pointer !important;
+    border-radius: 5px !important;
+    transition: background-color 0.3s ease !important;
+}
+
+button:hover {
+    background-color: #7a3300 !important;
+}
+
+.fallback-image {
+    position: relative;
+    color: black;
+    font-size: 16px;
+    overflow: hidden;
+    text-align: center;
+}
+
+.fallback-image img {
+    width: 150px;  /* Set specific width */
+    height: 200px;  /* Set specific height */
+    object-fit: cover;  /* Maintain aspect ratio */
+}
+
+.fallback-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-40%, -50%);
+    color: black;  /* Or any color you prefer */
+    font-weight: bold;
+    text-align: center;
+}
