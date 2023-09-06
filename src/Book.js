@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import booksData from './book-data.json'; 
+
 // booksData is an arbitrary name for the imported data
 // the json file is an array of objects where each object is a book with its properties
+import booksData from './book-data.json'; 
+
+// Import the SearchComponent for the dropdown sort option and search bar
+import SearchComponent from './SearchComponent';
+
+// Import the ViewToggle for the view toggle button
+import ViewToggle from './ViewToggle';
 
 // Arrow function for Books component
 const Books = () => {
@@ -13,11 +20,29 @@ const Books = () => {
 
     // Create a state variable to keep track of the sorting option
     const [sortOption, setSortOption] = useState('title');
+    
     // Create a state variable to keep track of the sorted books 
     const [sortedBooks, setSortedBooks] = useState([]); 
+    
+    // Create a state variable to keep track of the query
+    const [searchQuery, setSearchQuery] = useState('');
+    
+    // Create a state variable to keep track of the view
+    const [view, setView] = useState('list');  // Default to list view
 
     useEffect(() => {
         let sorted = [...booksData];
+
+        // Filtering based on search query
+        if (searchQuery) {
+            sorted = sorted.filter(
+            book => 
+                book.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                book.author.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
+
+        // Sorting based on dropdown sort option
         switch (sortOption) {
           case 'title':
             sorted.sort((a, b) => a.title.localeCompare(b.title));
@@ -35,7 +60,7 @@ const Books = () => {
             break;
         }
         setSortedBooks(sorted);
-      }, [sortOption]);
+      }, [sortOption, searchQuery]);
 
 
     // Function to toggle a book's expanded state
@@ -68,13 +93,15 @@ const Books = () => {
     // Return the JSX for the Books component
     return (
         <div>
-            {/* Dropdown menu */}
-            <select onChange={(e) => setSortOption(e.target.value)}>
-                <option value="title">Sort by Title</option>
-                <option value="author">Sort by Author</option>
-                <option value="oldest">Sort by Oldest Publication</option>
-                <option value="newest">Sort by Newest Publication</option>
-            </select>
+            <ViewToggle view={view} setView={setView} />
+
+            {/* Search bar and Dropdown Sort Option*/}
+            <SearchComponent 
+                searchQuery={searchQuery} 
+                setSearchQuery={setSearchQuery} 
+                sortOption={sortOption}
+                setSortOption={setSortOption}
+            />
 
             {/* 
             The map method is used to iterate over the array of objects. 
@@ -82,35 +109,43 @@ const Books = () => {
             Each div needs a unique key prop. We can use book's index of the json array.
             */}
 
-            {sortedBooks.map((book, index) => (
-                <div key={book.title}>
-                    <img src={book.coverImageUrl} alt={book.title} width="100" />
-                    <h2>{book.title}</h2>
-                    <h3>Author: {book.author}</h3>
-                    <p>{book.shortDescription}</p>
+            <div className="container">
+                <div className="row">
+                    {sortedBooks.map((book, index) => (
+                        <div key={book.title} className={view === 'grid' ? 'col-md-4' : 'col-md-12'}>
+                            <div className="book-content">
+                                <img src={book.coverImageUrl} alt={book.title} width="100" />
+                                <h2>{book.title}</h2>
+                                <h3>Author: {book.author}</h3>
+                                <p>{book.shortDescription}</p>
 
-                    {/* More Information Button */}
-                    <p>
-                    <button
-                    onClick={() => toggleExpand(book)}
-                    aria-expanded={expandedBooks[book.title] || false}
-                    >
-                    More Information
-                    </button>
-                    </p>
+                                {/* More Information Button */}
+                                <p>
+                                <button
+                                onClick={() => toggleExpand(book)}
+                                aria-expanded={expandedBooks[book.title] || false}
+                                >
+                                More Information
+                                </button>
+                                </p>
 
-                    {/* Conditional Rendering */}
-                    {expandedBooks[book.title] && (
-                    <div>
-                        <p>Publisher: {book.publisher}</p>
-                        <p>Publication Date: {book.publicationDate}</p>
-                        <p>{book.detailedDescription}</p>
-                        <a href={book.url}>Link to Book</a>
-                    </div>
-                    )}
+                                {/* Conditional Rendering */}
+                                {expandedBooks[book.title] && (
+                                <div>
+                                    <p>Publisher: {book.publisher}</p>
+                                    <p>Publication Date: {book.publicationDate}</p>
+                                    <p>{book.detailedDescription}</p>
+                                    <a href={book.url}>Link to Book</a>
+                                </div>
+                                )}
+                            </div>
+                        </div>
+                    ))}
                 </div>
-            ))}
-        </div>
+            </div>
+
+        {/* div around the entire return statement */}
+        </div> 
     );
 };
 

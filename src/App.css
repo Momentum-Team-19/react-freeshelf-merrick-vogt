@@ -1,1 +1,7 @@
-
+.book-content {
+    /* No max-height or overflow settings */
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
