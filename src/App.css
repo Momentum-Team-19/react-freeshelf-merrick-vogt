@@ -24,12 +24,19 @@
 }
 
 .list-view img, .grid-view img {
-    border: 2px solid #7a3300;  /* Add leather-colored border */
+    border: 2px solid #7a3300;  
 }
   
 
 .list-view img {
-    height: 200px;  /* Set height to match the new min-height of the container */
+    height: 200px;  
+    width: auto;
+    margin-right: 20px;
+    margin-left: 40px;
+}
+
+.grid-view img {
+    height: 200px;  
     width: auto;
     margin-right: 20px;
     margin-left: 40px;
@@ -85,8 +92,9 @@ button:hover {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-40%, -50%);
+    transform: translate(-42%, -50%);
     color: black;  /* Or any color you prefer */
     font-weight: bold;
     text-align: center;
+    padding: 35px;
 }

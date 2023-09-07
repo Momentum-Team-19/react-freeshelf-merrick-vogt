@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import blankBookImage from './blank-book.jpg';
 
 
@@ -11,7 +11,6 @@ import SearchComponent from './SearchComponent';
 
 // Import the ViewToggle for the view toggle button
 import ViewToggle from './ViewToggle';
-
 
 
 // Arrow function for Books component
@@ -77,7 +76,6 @@ const Books = () => {
     };
       
 
-
     // Function to toggle a book's expanded state
     // This function takes in the index of the book that was clicked
     // The index is the key of the expandedBooks object
@@ -101,9 +99,17 @@ const Books = () => {
       
         // Step 4: Update the state with the new object.
         setExpandedBooks(newExpandedBooks);
+
+        // Assume bookRef is the ref attached to your book component
+        if (bookRef && bookRef.current) {
+            bookRef.current.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
       };
 
-        
+    // In your component body
+    const bookRef = useRef(null);
       
     // Return the JSX for the Books component
     return (
@@ -136,7 +142,7 @@ const Books = () => {
                                         onError={() => handleImageError(book.title)}
                                     />
                                 )}
-                                <div className="book-info">
+                                <div ref={bookRef} className="book-info">
                                     <h2 className="mt-3">{book.title}</h2>
                                     <h3>Author: {book.author}</h3>
                                     <p>{book.shortDescription}</p>
@@ -146,7 +152,7 @@ const Books = () => {
                                         aria-expanded={expandedBooks[book.title] || false}
                                         className="btn btn-primary"
                                     >
-                                    More Information
+                                    {expandedBooks[book.title] ? "Less Information" : "More Information"}
                                     </button>
 
                                     {expandedBooks[book.title] && (
